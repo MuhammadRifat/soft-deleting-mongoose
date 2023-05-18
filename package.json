@@ -1,0 +1,14 @@
+{
+  "name": "soft-deleting-mongoose",
+  "version": "1.0.0",
+  "description": "This is simple, light-weight soft deleting package for Mongodb using mongoose ODM.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rifat",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^7.1.1"
+  }
+}
