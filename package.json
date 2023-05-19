@@ -1,7 +1,7 @@
 {
   "name": "soft-deleting-mongoose",
-  "version": "1.0.1",
-  "description": "This is simple, light-weight soft deleting package for Mongodb using mongoose ODM.",
+  "version": "1.0.3",
+  "description": "This is a simple, easy-to-understand soft deleting package for MongoDB using Mongoose ODM.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
