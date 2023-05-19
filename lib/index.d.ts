@@ -5,13 +5,13 @@ export interface IQueryHelpers<T> {
     withDeleted(): QueryWithHelpers<HydratedDocument<T>, HydratedDocument<T>, IQueryHelpers<T>>;
 }
 export interface ModelInterface<IDoc> extends Model<IDoc, IQueryHelpers<IDoc>> {
-    softDelete(query: object): IDoc;
+    softDelete(query: object): unknown;
     softDeleteById(_id: Types.ObjectId): IDoc;
     restoreById(_id: Types.ObjectId): IDoc;
-    restore(query: object): IDoc;
-    restoreAll(): IDoc;
+    restore(query: object): unknown;
+    restoreAll(): unknown;
     forceDeleteById(_id: Types.ObjectId): IDoc;
-    forceDelete(query: object): IDoc;
+    forceDelete(query: object): unknown;
 }
 declare class MongooseSchema<IDoc, ModelType, IInstanceMethods, QueryHelpers> extends Schema<IDoc, ModelInterface<IDoc>, IInstanceMethods, IQueryHelpers<IDoc>> {
     constructor(schema: any);

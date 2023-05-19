@@ -9,13 +9,13 @@ export interface IQueryHelpers<T> {
 
 // interface for model
 export interface ModelInterface<IDoc> extends Model<IDoc, IQueryHelpers<IDoc>> {
-  softDelete(query: object): IDoc;
+  softDelete(query: object): unknown;
   softDeleteById(_id: Types.ObjectId): IDoc;
   restoreById(_id: Types.ObjectId): IDoc;
-  restore(query: object): IDoc;
-  restoreAll(): IDoc;
+  restore(query: object): unknown;
+  restoreAll(): unknown;
   forceDeleteById(_id: Types.ObjectId): IDoc;
-  forceDelete(query: object): IDoc;
+  forceDelete(query: object): unknown;
 }
 
 class MongooseSchema<IDoc, ModelType, IInstanceMethods, QueryHelpers> extends Schema<
@@ -106,7 +106,7 @@ class MongooseSchema<IDoc, ModelType, IInstanceMethods, QueryHelpers> extends Sc
 
     // soft delete by query
     this.statics.forceDelete = function (query: object) {
-      return this.findOneAndDelete(query, { new: true });
+      return this.deleteMany(query, { new: true });
     };
   }
 
