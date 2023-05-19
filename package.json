@@ -2,13 +2,41 @@
   "name": "soft-deleting-mongoose",
   "version": "1.0.0",
   "description": "This is simple, light-weight soft deleting package for Mongodb using mongoose ODM.",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" ",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "author": "Rifat",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MuhammadRifat/soft-deleting-mongoose.git"
+  },
+  "keywords": [
+    "soft-delete",
+    "mongoose",
+    "mongodb",
+    "soft-deleting-mongodb",
+    "delete"
+  ],
+  "homepage": "https://github.com/MuhammadRifat/soft-deleting-mongoose#readme",
   "dependencies": {
     "mongoose": "^7.1.1"
-  }
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0"
+  },
+  "files": [
+    "lib/**/*"
+  ]
 }
