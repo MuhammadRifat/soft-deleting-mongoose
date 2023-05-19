@@ -1,14 +1,14 @@
 import { HydratedDocument, Model, QueryWithHelpers, Schema, Types } from 'mongoose';
 
 // interface for query helpers
-interface IQueryHelpers<T> {
+export interface IQueryHelpers<T> {
   notDeleted(): QueryWithHelpers<HydratedDocument<T>, HydratedDocument<T>, IQueryHelpers<T>>;
   onlyDeleted(): QueryWithHelpers<HydratedDocument<T>, HydratedDocument<T>, IQueryHelpers<T>>;
   withDeleted(): QueryWithHelpers<HydratedDocument<T>, HydratedDocument<T>, IQueryHelpers<T>>;
 }
 
 // interface for model
-interface ModelInterface<IDoc> extends Model<IDoc, IQueryHelpers<IDoc>> {
+export interface ModelInterface<IDoc> extends Model<IDoc, IQueryHelpers<IDoc>> {
   softDelete(query: object): IDoc;
   softDeleteById(_id: Types.ObjectId): IDoc;
   restoreById(_id: Types.ObjectId): IDoc;
@@ -20,9 +20,9 @@ interface ModelInterface<IDoc> extends Model<IDoc, IQueryHelpers<IDoc>> {
 
 class MongooseSchema<IDoc, ModelType, IInstanceMethods, QueryHelpers> extends Schema<
   IDoc,
-  ModelInterface<IDoc> & ModelType,
+  ModelInterface<IDoc>,
   IInstanceMethods,
-  IQueryHelpers<IDoc> & QueryHelpers
+  IQueryHelpers<IDoc>
 > {
   constructor(schema: any) {
     schema.deleted_at = {
@@ -39,8 +39,8 @@ class MongooseSchema<IDoc, ModelType, IInstanceMethods, QueryHelpers> extends Sc
   bindSoftDeletingStaticMethods() {
     // soft delete by id
     this.statics.softDeleteById = function (_id: Types.ObjectId) {
-      return this.findByIdAndUpdate(
-        _id,
+      return this.findOneAndUpdate(
+        { _id, deleted_at: null },
         {
           $set: {
             deleted_at: new Date(),
@@ -52,14 +52,13 @@ class MongooseSchema<IDoc, ModelType, IInstanceMethods, QueryHelpers> extends Sc
 
     // soft delete by query
     this.statics.softDelete = function (query: object) {
-      return this.findOneAndUpdate(
-        query,
+      return this.updateMany(
+        { ...query, deleted_at: null },
         {
           $set: {
             deleted_at: new Date(),
           },
         },
-        { new: true },
       );
     };
 
@@ -78,11 +77,14 @@ class MongooseSchema<IDoc, ModelType, IInstanceMethods, QueryHelpers> extends Sc
 
     // soft delete by query
     this.statics.restore = function (query: object) {
-      return this.updateMany(query, {
-        $set: {
-          deleted_at: null,
+      return this.updateMany(
+        { ...query, deleted_at: { $ne: null } },
+        {
+          $set: {
+            deleted_at: null,
+          },
         },
-      });
+      );
     };
 
     // soft delete by query
