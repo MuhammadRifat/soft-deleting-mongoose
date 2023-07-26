@@ -1,36 +1,19 @@
-import { HydratedDocument, Model, QueryWithHelpers, Schema, Types } from 'mongoose';
+import { HydratedDocument, QueryWithHelpers, Schema, SchemaDefinition, SchemaDefinitionType, Types } from 'mongoose';
+import { ICommon, IModel, IQueryHelpers } from './interface';
 
-// interface for query helpers
-export interface IQueryHelpers<T> {
-  notDeleted(): QueryWithHelpers<HydratedDocument<T>, HydratedDocument<T>, IQueryHelpers<T>>;
-  onlyDeleted(): QueryWithHelpers<HydratedDocument<T>, HydratedDocument<T>, IQueryHelpers<T>>;
-  withDeleted(): QueryWithHelpers<HydratedDocument<T>, HydratedDocument<T>, IQueryHelpers<T>>;
-}
-
-// interface for model
-export interface ModelInterface<IDoc> extends Model<IDoc, IQueryHelpers<IDoc>> {
-  softDelete(query: object): unknown;
-  softDeleteById(_id: Types.ObjectId): IDoc;
-  restoreById(_id: Types.ObjectId): IDoc;
-  restore(query: object): unknown;
-  restoreAll(): unknown;
-  forceDeleteById(_id: Types.ObjectId): IDoc;
-  forceDelete(query: object): unknown;
-}
-
-class MongooseSchema<IDoc, ModelType, IInstanceMethods, QueryHelpers> extends Schema<
+class MongooseSchema<IDoc, IInstanceMethods = {}, QueryHelpers = {}> extends Schema<
   IDoc,
-  ModelInterface<IDoc>,
+  IModel<IDoc, QueryHelpers, IInstanceMethods>,
   IInstanceMethods,
-  IQueryHelpers<IDoc>
+  IQueryHelpers<IDoc> & QueryHelpers
 > {
-  constructor(schema: any) {
+  constructor(schema: SchemaDefinition<SchemaDefinitionType<IDoc & ICommon>>, timestamps: { timestamps: boolean }) {
     schema.deleted_at = {
       type: Date,
       default: null,
     };
 
-    super(schema);
+    super(schema, timestamps);
     this.bindSoftDeletingQueryHelpers();
     this.bindSoftDeletingStaticMethods();
   }
